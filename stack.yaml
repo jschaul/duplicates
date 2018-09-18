@@ -1,0 +1,13 @@
+resolver: lts-12.10
+packages:
+- .
+extra-deps:
+- tokenize-0.3.0
+- suffixtree-0.2.2.1
+- suffixarray-0.0.3.1
+- Unique-0.4.7.5
+- rio-0.1.5.0
+  #- suffix-array-0.3.0.0
+  #
+allow-newer: true
+
