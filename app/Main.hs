@@ -48,6 +48,7 @@ import Data.Text (Text)
 import Control.Applicative
 import Control.Monad
 import Data.List.Unique
+import Data.Char (isUpper)
 
 import qualified NLP.Tokenize.Text as T
 import qualified NLP.Tokenize.String as S
@@ -80,8 +81,12 @@ main = do
                    >=> T.allPunctuation
                   ) contents
 
-    output "sentences" $ onlyInteresting (repeated splitOnDots)
-    output "phrases" $ onlyInteresting (repeated splitOnPunctuation)
+    let splitWords = T.tokenize contents
+
+    output "abbreviations" $ abbreviations splitWords
+
+    -- output "sentences" $ onlyInteresting (repeated splitOnDots)
+    -- output "phrases" $ onlyInteresting (repeated splitOnPunctuation)
   where
     output :: Text -> [Text] -> IO ()
     output str xs = do
@@ -93,5 +98,13 @@ main = do
     onlyInteresting = filter (\s -> not $ Text.isInfixOf "|" s)
                     . filter (\s -> not $ Text.isInfixOf "------------" s)
                     . filter (\s -> Text.length s > 20)
+
+    abbreviations :: [Text] -> [Text]
+    abbreviations = unique . filter (\s -> case Text.unpack s of
+                                    x : _ : y : _ -> isUpper x && isUpper y
+                                    x :  y : _ -> isUpper x && isUpper y
+                                    _ -> False
+                           )
+
 
 
